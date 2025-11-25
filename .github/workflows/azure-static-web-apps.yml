@@ -1,0 +1,65 @@
+name: Azure Static Web Apps CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches:
+      - main
+
+jobs:
+  build_and_deploy_job:
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
+    runs-on: ubuntu-latest
+    name: Build and Deploy Job
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+          lfs: false
+      - name: Build And Deploy
+        id: builddeploy
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: "upload"
+          app_location: "/"
+          api_location: ""
+          output_location: ""
+
+  close_pull_request_job:
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    name: Close Pull Request Job
+    steps:
+      - name: Close Pull Request
+        id: closepullrequest
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          action: "close"
+```
+
+4. Scroll down and click **"Commit changes"** (green button)
+5. In the popup, click **"Commit changes"** again
+
+---
+
+## 🚀 **Step 3: Watch It Deploy!**
+
+1. In GitHub, click **"Actions"** tab (top menu)
+2. You'll see "Azure Static Web Apps CI/CD" workflow running
+3. Click on it to watch progress
+4. Wait 2-3 minutes
+5. ✅ **Green checkmark = Success!**
+
+---
+
+## 🎯 **Step 4: Test Your Live Site!**
+
+Once you see the green checkmark, visit:
+```
+https://polite-dune-076239c1e.3.azurestaticapps.net
